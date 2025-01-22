@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Overlay with Popup</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        /* Background image settings */
+        .background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Video container settings */
+        .video-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* SVG Mask Settings */
+        .svg-mask {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* Disable pointer events for the entire SVG */
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Path clickable setting */
+        .svg-mask path {
+            pointer-events: all; /* Enable pointer events only for the path */
+            fill: none; /* Remove the fill */
+            stroke: none; /* Remove the stroke (if not needed) */
+        }
+
+        /* Popup image settings */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+
+        .popup img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background image -->
+    <img src="assets/images/page2.webp" alt="Background Image" class="background">
+
+    <!-- Video overlay -->
+    <div class="video-container">
+        <video id="video-overlay" autoplay muted loop>
+            <source src="assets/videos/layer.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Inline SVG Mask Layer -->
+
+    <img src="assets/masks/mask.svg" width="1122.5601" height="793.59998">
+    <!-- <svg id="svg-mask" class="svg-mask" xmlns="http://www.w3.org/2000/svg" version="1.1" width="1122.5601" height="793.59998" viewBox="0 0 1122.5601 793.59998"> -->
+    <!--     <defs id="defs6"></defs> -->
+    <!--     <g inkscape:groupmode="layer" inkscape:label="Image" id="g8"> -->
+    <!--         <path style="fill:none;stroke:none;" d="m 549.61749,342.74818 c -0.11127,-0.17996 -0.12391,-1.01596 -0.0282,-1.85772 0.0958,-0.84176 0.53677,-5.27447 0.98,-9.85047 0.4432,-4.576 0.964,-9.04 1.15728,-9.92 0.19328,-0.88 0.44563,-3.36053 0.56074,-5.51229 0.18963,-3.5451 0.58627,-5.08081 1.1632,-4.50386 0.4688,0.46877 0.17366,8.99414 -0.45428,13.1229 -0.36694,2.41271 -0.81907,7.0633 -1.00476,10.33466 -0.18567,3.27133 -0.51172,6.47933 -0.72452,7.12886 -0.37814,1.15412 -1.24605,1.71076 -1.6495,1.05792 z m 5.4568,-61.97436 c -0.2601,-0.67775 -0.26531,-0.65703 0.31206,-1.23443 0.28436,-0.28435 0.689,-1.66215 0.92301,-3.14285 0.22915,-1.4501 0.64368,-4.00455 0.92112,-5.67655 0.27747,-1.672 0.74039,-4.552 1.02874,-6.4 0.28832,-1.848 0.94537,-4.944 1.46006,-6.88 2.28864,-8.60836 3.47427,-13.51245 4.56455,-18.88 1.42761,-7.02828 3.78796,-17.06981 5.07443,-21.58782 0.88109,-3.09428 0.92435,-3.48202 0.57133,-5.12 -0.85351,-3.96001 -3.81988,-9.79291 -6.90848,-13.58451 -1.73572,-2.13078 -2.70106,-4.78646 -2.70106,-7.43072 0,-1.42715 0.14346,-1.88949 0.78544,-2.53149 0.432,-0.432 1.01488,-0.78545 1.2953,-0.78545 0.58419,0 1.939,1.36504 2.57734,2.5968 0.97574,1.88276 3.72653,10.54444 4.14042,13.03727 0.24419,1.47075 0.66873,2.92244 0.94345,3.22597 0.27469,0.30354 0.42064,0.63069 0.32435,0.727 -0.22028,0.22027 0.49773,3.1336 0.77168,3.13113 0.11111,-9.6e-4 0.45223,-1.04501 0.75802,-2.32 0.30579,-1.275 0.89997,-3.25418 1.32042,-4.39818 0.42041,-1.144 0.91689,-3.41357 1.10329,-5.0435 0.1864,-1.62992 0.6185,-3.57392 0.9602,-4.32 0.90025,-1.96546 1.89472,-4.61753 2.48851,-6.63649 0.2847,-0.968 0.74528,-2.14832 1.02352,-2.62292 0.42912,-0.73201 0.44838,-1.11195 0.12697,-2.50441 -0.20841,-0.90283 -0.37891,-1.91162 -0.37891,-2.24177 0,-0.57791 0.0541,-0.58022 1.45239,-0.062 1.02617,0.38033 1.50835,0.76132 1.64313,1.29831 0.30106,1.19956 -0.12365,4.60023 -0.84016,6.72718 C 580.1326,190.1413 579.95516,192 580.4445,192 c 0.15645,0 0.26445,-0.18089 0.24,-0.40198 -0.0243,-0.22108 0.96355,-2.41708 2.19555,-4.88 1.232,-2.46291 2.25264,-4.51467 2.2681,-4.55947 0.0495,-0.14335 2.20096,0.63889 2.49961,0.90883 0.34298,0.30999 -1.8535,5.00946 -3.50249,7.34049 -1.52112,1.97328 -3.20083,3.96014 -5.11613,5.32574 z" id="path2" /> -->
+    <!--     </g> -->
+    <!-- </svg> -->
+
+    <!-- Popup Image -->
+    <div id="popup" class="popup">
+        <span class="popup-close" onclick="closePopup()">×</span>
+        <img src="assets/images/popup_image.jpg" alt="Popup Image">
+    </div>
+
+    <script>
+        // Function to display the popup
+        function showPopup() {
+            document.getElementById("popup").style.display = "block";
+        }
+
+        // Function to close the popup
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+        }
+
+        // Add event listener to the path inside the SVG mask
+        document.getElementById("svg-mask").querySelector("path").addEventListener("click", showPopup);
+    </script>
+</body>
+</html>
